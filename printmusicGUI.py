@@ -22,13 +22,13 @@ class MainGUI(QMainWindow):
         self.init_ui()
 
     def init_ui(self):
-        self.resize(640, 640)
+        self.resize(800, 800)
         self.center()
         self.setWindowFlags(QtCore.Qt.WindowCloseButtonHint)
         self.setWindowTitle('PrintableMusic')
         # self.setWindowIcon(QIcon('web.png'))
 
-        self.view = Plot3DCanvas(self, width=5, height=5)
+        self.view = Plot3DCanvas(self, width=8, height=8)
         self.view.move(0, 0)
 
         self.add_menu()
@@ -38,11 +38,9 @@ class MainGUI(QMainWindow):
     def add_menu(self):
         menu = self.menuBar()
         file_menu = menu.addMenu('&File')
-
         action_load = QAction("&Load...", self)
         action_load.setStatusTip('Load file')
         action_load.triggered.connect(self.load_file)
-
         file_menu.addAction(action_load)
 
     def center(self):
@@ -56,9 +54,6 @@ class MainGUI(QMainWindow):
         if file_names[0]:
             self.statusBar().showMessage("Open: " + file_names[0])
             self.processor = Processor(file_names[0])
-            coro = self.processor.get_waveform()
-            deque().append(coro)
-            coro.send(None)
             self.show_3d(self.processor.get_3d())
 
     def show_3d(self, data):
@@ -67,7 +62,7 @@ class MainGUI(QMainWindow):
 
 
 class Plot3DCanvas(FigureCanvas):
-    def __init__(self, parent=None, width=5, height=5, dpi=100):
+    def __init__(self, parent=None, width=8, height=8, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111, projection='3d')
         Axes3D.mouse_init(self.axes, rotate_btn=1, zoom_btn=3)
